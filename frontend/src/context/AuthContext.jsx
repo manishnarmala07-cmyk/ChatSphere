@@ -3,6 +3,9 @@ import {
   useContext,
   useState,
 } from "react";
+import {
+  disconnectSocket,
+} from "../socket";
 
 const AuthContext = createContext();
 
@@ -33,11 +36,13 @@ export const AuthProvider = ({
   };
 
   const logout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
+  disconnectSocket();
 
-    setUser(null);
-  };
+  localStorage.removeItem("token");
+  localStorage.removeItem("user");
+
+  setUser(null);
+};
 
   return (
     <AuthContext.Provider
