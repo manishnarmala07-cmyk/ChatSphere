@@ -19,4 +19,12 @@ Content-Type: application/json
 
 ###profile
 GET http://localhost:5000/api/auth/profile
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhMzU3NzA3ZTc0NmE0MWFhYzY4YWZjYiIsImlhdCI6MTc4MTg4ODgwNCwiZXhwIjoxNzgyNDkzNjA0fQ.M3vEvVPTtuEgaiz8Yf60umaV4gPA_sZDCwrIqOA3S1k
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhMzU3NzA3ZTc0NmE0MWFhYzY4YWZjYiIsImlhdCI6MTc4MTg5MDI1MywiZXhwIjoxNzgyNDk1MDUzfQ.5g1q5qt-0iFpOL8RPGI2cxJWJQNfzOEpnjwER7fBVcg
+
+### Google Login
+POST http://localhost:5000/api/auth/google
+Content-Type: application/json
+
+{
+  "credential": "google_id_token_here"
+}
