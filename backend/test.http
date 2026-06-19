@@ -1,0 +1,22 @@
+### Register
+POST http://localhost:5000/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "Manish",
+  "email": "manish@example.com",
+  "password": "123456"
+}
+
+### Login
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "manish@example.com",
+  "password": "123456"
+}
+
+###profile
+GET http://localhost:5000/api/auth/profile
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhMzU3NzA3ZTc0NmE0MWFhYzY4YWZjYiIsImlhdCI6MTc4MTg4ODgwNCwiZXhwIjoxNzgyNDkzNjA0fQ.M3vEvVPTtuEgaiz8Yf60umaV4gPA_sZDCwrIqOA3S1k
