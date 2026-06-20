@@ -9,6 +9,11 @@ const notFound = require("./middleware/notFoundMiddleware");
 const errorHandler = require("./middleware/errorMiddleware");
 const passport =
   require("./config/passport");
+
+  const messageRoutes =
+  require(
+    "./routes/messageRoutes"
+  );
 const app = express();
 
 app.use(cors());
@@ -22,7 +27,10 @@ app.get("/", (req, res) => {
 
 app.use("/api/health", healthRoutes);
 app.use("/api/auth", authRoutes);
-
+app.use(
+  "/api/messages",
+  messageRoutes
+);
 app.use(notFound);
 app.use(errorHandler);
 

@@ -184,9 +184,32 @@ const getProfile = async (
   });
 };
 
+const getAllUsers =
+  async (req, res) => {
+    try {
+      const users =
+        await User.find({
+          _id: {
+            $ne: req.user._id,
+          },
+        }).select(
+          "_id name email avatar"
+        );
+
+      res.json(users);
+    } catch (error) {
+      res.status(500);
+      throw new Error(
+        error.message
+      );
+    }
+  };
+
+  
 module.exports = {
   registerUser,
   loginUser,
   googleLogin,
   getProfile,
+  getAllUsers,
 };

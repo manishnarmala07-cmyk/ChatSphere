@@ -1,30 +1,162 @@
-### Register
+# ### Register
+# POST http://localhost:5000/api/auth/register
+# Content-Type: application/json
+
+# {
+#   "name": "Manish2",
+#   "email": "manish2@example.com",
+#   "password": "123456"
+# }
+
+# ### Login
+# POST http://localhost:5000/api/auth/login
+# Content-Type: application/json
+
+# {
+#   "email": "manish@example.com",
+#   "password": "123456"
+# }
+
+# ###profile
+# GET http://localhost:5000/api/auth/profile
+# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhMzU3NzA3ZTc0NmE0MWFhYzY4YWZjYiIsImlhdCI6MTc4MTg5MDI1MywiZXhwIjoxNzgyNDk1MDUzfQ.5g1q5qt-0iFpOL8RPGI2cxJWJQNfzOEpnjwER7fBVcg
+
+# ### Google Login
+# POST http://localhost:5000/api/auth/google
+# Content-Type: application/json
+
+# {
+#   "credential": "google_id_token_here"
+# }
+### ========================================
+### HEALTH CHECK
+### ========================================
+
+GET http://localhost:5000/api/health
+
+###
+
+### ========================================
+### REGISTER USER 1
+### ========================================
+
 POST http://localhost:5000/api/auth/register
 Content-Type: application/json
 
 {
-  "name": "Manish2",
-  "email": "manish2@example.com",
+  "name": "Manish",
+  "email": "manish@test.com",
   "password": "123456"
 }
 
-### Login
+###
+
+### ========================================
+### REGISTER USER 2
+### ========================================
+
+POST http://localhost:5000/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "Alex",
+  "email": "alex@test.com",
+  "password": "123456"
+}
+
+###
+
+### ========================================
+### LOGIN USER 1
+### ========================================
+
 POST http://localhost:5000/api/auth/login
 Content-Type: application/json
 
 {
-  "email": "manish@example.com",
+  "email": "manish@test.com",
   "password": "123456"
 }
 
-###profile
-GET http://localhost:5000/api/auth/profile
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhMzU3NzA3ZTc0NmE0MWFhYzY4YWZjYiIsImlhdCI6MTc4MTg5MDI1MywiZXhwIjoxNzgyNDk1MDUzfQ.5g1q5qt-0iFpOL8RPGI2cxJWJQNfzOEpnjwER7fBVcg
+###
 
-### Google Login
-POST http://localhost:5000/api/auth/google
+### ========================================
+### LOGIN USER 2
+### ========================================
+
+POST http://localhost:5000/api/auth/login
 Content-Type: application/json
 
 {
-  "credential": "google_id_token_here"
+  "email": "alex@test.com",
+  "password": "123456"
 }
+
+###
+
+### ========================================
+### PROFILE
+### ========================================
+
+GET http://localhost:5000/api/auth/profile
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhMzU4YjY5ZTJkNGFjOGNmZWI2NDM3NyIsImlhdCI6MTc4MTg5NDAwNiwiZXhwIjoxNzgyNDk4ODA2fQ.1gkQOWxe8HjSct00Yr6gdIzNJoX2Ne7q0g9ErdqpAaw
+
+###
+
+### ========================================
+### GET ALL USERS
+### ========================================
+
+GET http://localhost:5000/api/auth/users
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhMzU4YjY5ZTJkNGFjOGNmZWI2NDM3NyIsImlhdCI6MTc4MTkzMTMzOSwiZXhwIjoxNzgyNTM2MTM5fQ.XktSGDdxjPbcsUCJIq2FwsFxWDAUtPJB4H5kuAWEYdc
+
+###
+
+### ========================================
+### SEND MESSAGE
+### ========================================
+
+POST http://localhost:5000/api/messages
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhMzU4YjY5ZTJkNGFjOGNmZWI2NDM3NyIsImlhdCI6MTc4MTkzMTMzOSwiZXhwIjoxNzgyNTM2MTM5fQ.XktSGDdxjPbcsUCJIq2FwsFxWDAUtPJB4H5kuAWEYdc
+
+{
+  "receiver": "6a358b71e2d4ac8cfeb64378",
+  "content": "Hello Alex"
+}
+
+###
+
+### ========================================
+### SEND MESSAGE 2
+### ========================================
+
+POST http://localhost:5000/api/messages
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhMzU4YjY5ZTJkNGFjOGNmZWI2NDM3NyIsImlhdCI6MTc4MTkzMTMzOSwiZXhwIjoxNzgyNTM2MTM5fQ.XktSGDdxjPbcsUCJIq2FwsFxWDAUtPJB4H5kuAWEYdc
+
+
+{
+  "receiver": "6a358b71e2d4ac8cfeb64378",
+  "content": "How are you?"
+}
+
+###
+
+### ========================================
+### LOAD CHAT HISTORY
+### ========================================
+
+GET http://localhost:5000/api/messages/6a358b71e2d4ac8cfeb64378
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhMzU4YjY5ZTJkNGFjOGNmZWI2NDM3NyIsImlhdCI6MTc4MTkzMTMzOSwiZXhwIjoxNzgyNTM2MTM5fQ.XktSGDdxjPbcsUCJIq2FwsFxWDAUtPJB4H5kuAWEYdc
+
+
+###
+
+### ========================================
+### INVALID ROUTE TEST
+### ========================================
+
+GET http://localhost:5000/api/xyz
+
+###

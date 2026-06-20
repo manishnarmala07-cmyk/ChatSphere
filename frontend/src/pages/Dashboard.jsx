@@ -6,7 +6,9 @@ import {
 import {
   connectSocket,
 } from "../socket";
-
+import {
+  Link
+} from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 function Dashboard() {
@@ -46,7 +48,12 @@ function Dashboard() {
       <h2>
         Welcome {user?.name}
       </h2>
-
+      <Link
+        to="/chat"
+        className="btn btn-primary me-3"
+      >
+        Open Chat
+      </Link>
       <h4 className="mt-4">
         Online Users:
         {" "}
