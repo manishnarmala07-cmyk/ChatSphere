@@ -54,6 +54,12 @@ function Dashboard() {
       >
         Open Chat
       </Link>
+      <Link
+        to="/groups"
+        className="btn btn-warning me-3"
+      >
+        Group Chat
+      </Link>
       <h4 className="mt-4">
         Online Users:
         {" "}

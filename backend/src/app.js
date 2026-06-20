@@ -4,7 +4,24 @@ const morgan = require("morgan");
 
 const healthRoutes = require("./routes/healthRoutes");
 const authRoutes = require("./routes/authRoutes");
+const groupRoutes =
+  require(
+    "./routes/groupRoutes"
+  );
 
+const groupMessageRoutes =
+  require(
+    "./routes/groupMessageRoutes"
+  );
+const groupInviteRoutes =
+  require(
+    "./routes/groupInviteRoutes"
+  );
+
+const adminRoutes =
+  require(
+    "./routes/adminRoutes"
+  );
 const notFound = require("./middleware/notFoundMiddleware");
 const errorHandler = require("./middleware/errorMiddleware");
 const passport =
@@ -30,6 +47,24 @@ app.use("/api/auth", authRoutes);
 app.use(
   "/api/messages",
   messageRoutes
+);
+app.use(
+  "/api/groups",
+  groupRoutes
+);
+
+app.use(
+  "/api/group-messages",
+  groupMessageRoutes
+);
+
+app.use(
+  "/api/group-invites",
+  groupInviteRoutes
+);
+app.use(
+  "/api/admin",
+  adminRoutes
 );
 app.use(notFound);
 app.use(errorHandler);

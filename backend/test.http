@@ -31,7 +31,9 @@
 ### ========================================
 ### HEALTH CHECK
 ### ========================================
-
+@baseUrl = http://localhost:5000
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhMzU4YjY5ZTJkNGFjOGNmZWI2NDM3NyIsImlhdCI6MTc4MTk0MzUxNSwiZXhwIjoxNzgyNTQ4MzE1fQ._OF2VEk5Ni1HmWvnLaUbofhg2Cn5GSuv01VYn4VKZho
+@groupId = 6a3622c6db75682c0b5b6e61
 GET http://localhost:5000/api/health
 
 ###
@@ -44,8 +46,8 @@ POST http://localhost:5000/api/auth/register
 Content-Type: application/json
 
 {
-  "name": "Manish",
-  "email": "manish@test.com",
+  "name": "Manish3",
+  "email": "manish3@example.com",
   "password": "123456"
 }
 
@@ -91,6 +93,19 @@ Content-Type: application/json
   "email": "alex@test.com",
   "password": "123456"
 }
+
+### ========================================
+### LOGIN USER 3
+### ========================================
+
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "manish2@example.com",
+  "password": "123456"
+}
+
 
 ###
 
@@ -160,3 +175,155 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhMzU4YjY5Z
 GET http://localhost:5000/api/xyz
 
 ###
+### Create Group
+
+POST {{baseUrl}}/api/groups
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "MERN Developers"
+}
+
+### Get Groups
+
+GET {{baseUrl}}/api/groups
+Authorization: Bearer {{token}}
+
+### Join Group
+
+POST {{baseUrl}}/api/groups/join
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhMzU4YjcxZTJkNGFjOGNmZWI2NDM3OCIsImlhdCI6MTc4MTkzMjgyNiwiZXhwIjoxNzgyNTM3NjI2fQ.zqZDW89tGBU2udBSkAKRv2xcQ1jnl6L_QBRAhnMpzWw
+
+{
+  "groupId": "{{groupId}}"
+}
+
+
+### Send Group Message
+
+POST {{baseUrl}}/api/group-messages
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "groupId": "{{groupId}}",
+  "content": "Hello Group!"
+}
+
+### Send Another Group Message
+
+POST {{baseUrl}}/api/group-messages
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "groupId": "{{groupId}}",
+  "content": "Welcome everyone."
+}
+
+### Load Group Messages
+
+GET {{baseUrl}}/api/group-messages/{{groupId}}
+Authorization: Bearer {{token}}
+
+### Invalid Group
+
+GET {{baseUrl}}/api/group-messages/invalidGroupId
+Authorization: Bearer {{token}}
+
+
+
+
+
+### Search Users
+
+GET http://localhost:5000/api/auth/search?q=alex
+Authorization: Bearer {{token}}
+
+###
+
+### Search Groups
+
+GET http://localhost:5000/api/groups/search?q=mern
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhMzU3NzA3ZTc0NmE0MWFhYzY4YWZjYiIsImlhdCI6MTc4MTkzNTcyNiwiZXhwIjoxNzgyNTQwNTI2fQ.pq9-tks3Fl9v1yXSHJISHA8yj64riIlRObN_P2jcGSA
+
+###
+
+### Send Invite
+
+POST http://localhost:5000/api/group-invites
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhMzU4YjY5ZTJkNGFjOGNmZWI2NDM3NyIsImlhdCI6MTc4MTkzNzEwNCwiZXhwIjoxNzgyNTQxOTA0fQ.VbZ-r_zi89mDAyVduBEvnMx0ub6TpxZwWirDOz_-1CM
+
+{
+  "groupId": "{{groupId}}",
+  "receiver": "6a3583c0037277a69f320c3c"
+}
+
+###
+
+### Get Invites
+
+GET http://localhost:5000/api/group-invites
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhMzU3NzA3ZTc0NmE0MWFhYzY4YWZjYiIsImlhdCI6MTc4MTkzNTk0MSwiZXhwIjoxNzgyNTQwNzQxfQ.z1j-8itOv2U6EEAjt7qLscoojgNR0IFrtjCMwPgaGTI
+
+###
+
+### Accept Invite
+
+PUT http://localhost:5000/api/group-invites/accept/6a362f1f1c117206719e962f
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhMzU3NzA3ZTc0NmE0MWFhYzY4YWZjYiIsImlhdCI6MTc4MTkzNTk0MSwiZXhwIjoxNzgyNTQwNzQxfQ.z1j-8itOv2U6EEAjt7qLscoojgNR0IFrtjCMwPgaGTI
+
+###
+
+### Reject Invite
+
+PUT http://localhost:5000/api/group-invites/reject/INVITE_ID
+Authorization: Bearer {{token}}
+
+
+
+
+
+### Group Details
+
+GET http://localhost:5000/api/groups/details/{{groupId}}
+Authorization: Bearer {{token}}
+
+###
+
+### Leave Group
+
+PUT http://localhost:5000/api/groups/leave/{{groupId}}
+Authorization: Bearer {{token}}
+
+###
+
+### Remove Member
+
+PUT http://localhost:5000/api/groups/remove/{{groupId}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "memberId": "6a357707e746a41aac68afcb"
+}
+
+
+### Admin Login
+
+POST http://localhost:5000/api/admin/login
+Content-Type: application/json
+
+{
+  "secret":"ChatSphereAdmin2026"
+}
+
+@adminToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhMzU4M2MwMDM3Mjc3YTY5ZjMyMGMzYyIsImlhdCI6MTc4MTk3NTQwMSwiZXhwIjoxNzgyNTgwMjAxfQ.yrDgS67YVb1HKNN21gtym94sPeQ_I_FUaoc3vmvKw-w
+
+###
+
+GET http://localhost:5000/api/admin/stats
+Authorization: Bearer {{adminToken}}

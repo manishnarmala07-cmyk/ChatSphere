@@ -1,6 +1,11 @@
 const Message =
   require("../models/Message");
-
+const {
+  encryptMessage,
+  decryptMessage,
+} = require(
+  "../utils/encryption"
+);
 const sendMessage =
   async (req, res) => {
     try {
@@ -14,11 +19,20 @@ const sendMessage =
           sender:
             req.user._id,
           receiver,
-          content,
+          content:
+            encryptMessage(
+              content
+            ),
         });
 
+      const responseMessage =
+        {
+          ...message.toObject(),
+          content,
+        };
+
       res.status(201).json(
-        message
+        responseMessage
       );
     } catch (error) {
       res.status(500);
@@ -27,7 +41,6 @@ const sendMessage =
       );
     }
   };
-
 const getMessages =
   async (req, res) => {
     try {
@@ -54,7 +67,20 @@ const getMessages =
           createdAt: 1,
         });
 
-      res.json(messages);
+      const decrypted =
+            messages.map(
+              (message) => ({
+                ...message.toObject(),
+                content:
+                  decryptMessage(
+                    message.content
+                  ),
+              })
+            );
+
+          res.json(
+            decrypted
+          );
     } catch (error) {
       res.status(500);
       throw new Error(

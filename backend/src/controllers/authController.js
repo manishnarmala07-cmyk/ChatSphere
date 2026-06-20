@@ -205,6 +205,34 @@ const getAllUsers =
     }
   };
 
+const searchUsers =
+  async (req, res) => {
+    try {
+      const query =
+        req.query.q || "";
+
+      const users =
+        await User.find({
+          name: {
+            $regex: query,
+            $options: "i",
+          },
+          _id: {
+            $ne:
+              req.user._id,
+          },
+        }).select(
+          "_id name email"
+        );
+
+      res.json(users);
+    } catch (error) {
+      res.status(500);
+      throw new Error(
+        error.message
+      );
+    }
+  };
   
 module.exports = {
   registerUser,
@@ -212,4 +240,5 @@ module.exports = {
   googleLogin,
   getProfile,
   getAllUsers,
+  searchUsers,
 };

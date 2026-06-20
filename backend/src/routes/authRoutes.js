@@ -6,6 +6,7 @@ const {
   googleLogin,
   getProfile,
   getAllUsers,
+  searchUsers,
 } = require(
   "../controllers/authController"
 );
@@ -47,5 +48,13 @@ router.get(
   protect,
   getAllUsers
 );
+
+// Search Users
+router.get(
+  "/search",
+  protect,
+  searchUsers
+);
+
 
 module.exports = router;
