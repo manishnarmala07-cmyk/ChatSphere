@@ -2,6 +2,7 @@ import { useState } from "react";
 import api from "../api/axios";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { Link } from "react-router-dom";
 
 function Login() {
   const navigate = useNavigate();
@@ -74,6 +75,12 @@ function Login() {
         <button className="btn btn-success">
           Login
         </button>
+        <p className="mt-3 text-center">
+          Don't have an account?{" "}
+          <Link to="/register">
+            Register
+          </Link>
+        </p>
       </form>
     </div>
   );

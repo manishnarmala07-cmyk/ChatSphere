@@ -1,6 +1,7 @@
 import { useState } from "react";
 import api from "../api/axios";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 function Register() {
   const navigate = useNavigate();
@@ -77,6 +78,12 @@ function Register() {
         <button className="btn btn-primary">
           Register
         </button>
+        <p className="mt-3 text-center">
+          Already have an account?{" "}
+          <Link to="/login">
+            Login
+          </Link>
+        </p>
       </form>
     </div>
   );

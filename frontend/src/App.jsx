@@ -13,6 +13,7 @@ import GroupChat from "./pages/GroupChat";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import AdminLogin
 from "./pages/AdminLogin";
+import Home from "./pages/Home";
 
 import AdminDashboard
 from "./pages/AdminDashboard";
@@ -21,14 +22,9 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route
-  path="/"
-  element={
-    <Navigate
-      to="/login"
-      replace
-    />
-  }
-/>
+          path="/"
+          element={<Home />}
+        />
         <Route
           path="/login"
           element={<Login />}
