@@ -587,10 +587,13 @@ const deleteForBoth =
           {users.map(
             (u) => (
               <div
-                key={
-                  u._id
-                }
-                className="p-2 border mb-2"
+              key={u._id}
+              className={`p-2 border mb-2 rounded ${
+                selectedUser?._id ===
+                u._id
+                  ? "bg-primary text-white"
+                  : "bg-light"
+              }`}
                 style={{
                   cursor:
                     "pointer",
@@ -601,7 +604,17 @@ const deleteForBoth =
                   )
                 }
               >
-                {u.name}
+                <div>
+  <strong className="text-primary">
+    {u.username}
+  </strong>
+
+  <br />
+
+  <small >
+    {u.name}
+  </small>
+</div>
               </div>
             )
           )}
@@ -611,12 +624,10 @@ const deleteForBoth =
 
           {selectedUser ? (
             <>
-              <h4>
-                Chat with{" "}
-                {
-                  selectedUser.name
-                }
-              </h4>
+              <div className="border-bottom pb-2 mb-3">
+                <h4>👤 {selectedUser.name}</h4>
+                <small className="text-success">Online</small>
+              </div>
 
               <div
                 id="chat-container"
@@ -684,7 +695,17 @@ msg._id ? (
 ) : (
   <>
     <div>
-  <span className="badge bg-primary">
+  <div
+  className={`d-inline-block p-2 rounded ${
+    msg.sender === user.id
+      ? "bg-primary text-white"
+      : "bg-light border"
+  }`}
+  style={{
+    maxWidth: "60%",
+    marginRight: msg.sender === user.id ? "15px" : undefined,
+  }}
+>
     {msg.content}
 
     {msg.edited && (
@@ -693,10 +714,16 @@ msg._id ? (
         (edited)
       </small>
     )}
-  </span>
+  </div>
 
-  <div>
-    <small className="text-muted">
+  <div
+  className={
+    msg.sender === user.id
+      ? "text-end"
+      : "text-start"
+  }
+>
+    <small className={`text-muted ${msg.sender === user.id && msg.status === "read" ? "text-primary" : ""}`}>
       {new Date(
         msg.createdAt
       ).toLocaleTimeString(
@@ -706,27 +733,19 @@ msg._id ? (
           minute: "2-digit",
         }
       )}
+      {msg.sender === user.id && (
+        " " +
+        (msg.status === "sent"
+          ? "✓"
+          : msg.status === "delivered"
+          ? "✓✓"
+          : msg.status === "read"
+          ? "✓✓"
+          : "")
+      )}
     </small>
   </div>
 </div>
-      {msg.sender ===
-  user.id && (
-  <small
-    className="ms-2 text-muted"
-  >
-    {msg.status ===
-      "sent" &&
-      "✓"}
-
-    {msg.status ===
-      "delivered" &&
-      "✓✓"}
-
-    {msg.status ===
-      "read" &&
-      "✓✓ Read"}
-  </small>
-)}
     {msg.sender ===
   user.id && (
   <div
@@ -842,7 +861,7 @@ msg._id ? (
                 />
 
                 <button
-                  className="btn btn-success"
+                  className="btn btn-primary px-3"
                   onClick={
                     sendMessage
                   }

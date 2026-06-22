@@ -363,3 +363,24 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhMzU4YjY5Z
 ###
 PUT http://localhost:5000/api/messages/read/6a38ce7bcd65de5f27388c31
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhMzU4YjY5ZTJkNGFjOGNmZWI2NDM3NyIsImlhdCI6MTc4MjEwNzg3MSwiZXhwIjoxNzgyNzEyNjcxfQ.78qCwziuNxIVVXP5rdJ3qWoo-kI8PF0dv1N0I9VSzrY
+
+
+
+###
+PUT http://localhost:5000/api/auth/username
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhMzU4YjY5ZTJkNGFjOGNmZWI2NDM3NyIsImlhdCI6MTc4MjEyMDU1NSwiZXhwIjoxNzgyNzI1MzU1fQ.0mrTTUPyn2I_iNGN2G0DmblVm8qXS999ZcQpqaA1tJ0
+Content-Type: application/json
+
+{
+  "username": "manish2026"
+}
+
+###
+PUT http://localhost:5000/api/auth/password
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhMzU4YjY5ZTJkNGFjOGNmZWI2NDM3NyIsImlhdCI6MTc4MjEyMDU1NSwiZXhwIjoxNzgyNzI1MzU1fQ.0mrTTUPyn2I_iNGN2G0DmblVm8qXS999ZcQpqaA1tJ0
+Content-Type: application/json
+
+{
+  "currentPassword":"123456",
+  "newPassword":"NewPassword123"
+}

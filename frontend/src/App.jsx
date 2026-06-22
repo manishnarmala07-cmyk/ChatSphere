@@ -15,6 +15,7 @@ import AdminLogin
 from "./pages/AdminLogin";
 import Home from "./pages/Home";
 import VerifyOtp from "./pages/VerifyOtp";
+import Profile from "./pages/Profile";
 import AdminDashboard
 from "./pages/AdminDashboard";
 function App() {
@@ -64,6 +65,14 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+  path="/profile"
+  element={
+    <ProtectedRoute>
+      <Profile />
+    </ProtectedRoute>
+  }
+/>
         <Route
   path="/admin-login"
   element={

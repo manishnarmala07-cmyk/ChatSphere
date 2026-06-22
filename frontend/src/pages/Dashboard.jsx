@@ -65,6 +65,12 @@ function Dashboard() {
       >
         Group Chat
       </Link>
+      <Link
+  to="/profile"
+  className="btn btn-info me-3"
+>
+  Profile
+</Link>
       <h4 className="mt-4">
         Online Users:
         {" "}
@@ -85,11 +91,14 @@ function Dashboard() {
       </ul>
 
       <button
-        className="btn btn-danger"
-        onClick={logout}
-      >
-        Logout
-      </button>
+  className="btn btn-danger"
+  onClick={() => {
+    logout();
+    navigate("/");
+  }}
+>
+  Logout
+</button>
     </div>
   );
 }

@@ -340,7 +340,115 @@ const searchUsers =
       );
     }
   };
-  
+const updateUsername =
+  async (req, res) => {
+    try {
+
+      const {
+        username,
+      } = req.body;
+
+      if (
+        !username
+      ) {
+        return res
+          .status(400)
+          .json({
+            message:
+              "Username required",
+          });
+      }
+
+      const existingUser =
+        await User.findOne({
+          username,
+        });
+
+      if (
+        existingUser &&
+        existingUser._id.toString() !==
+          req.user._id.toString()
+      ) {
+        return res
+          .status(400)
+          .json({
+            message:
+              "Username already taken",
+          });
+      }
+
+      req.user.username =
+        username;
+
+      await req.user.save();
+
+      res.json({
+        success: true,
+        username:
+          req.user.username,
+      });
+
+    } catch (error) {
+      res.status(500);
+      throw new Error(
+        error.message
+      );
+    }
+  };
+
+const changePassword =
+  async (req, res) => {
+    try {
+
+      const {
+        currentPassword,
+        newPassword,
+      } = req.body;
+
+      const user =
+        await User.findById(
+          req.user._id
+        );
+
+      const match =
+        await bcrypt.compare(
+          currentPassword,
+          user.password
+        );
+
+      if (!match) {
+        return res
+          .status(400)
+          .json({
+            message:
+              "Current password incorrect",
+          });
+      }
+
+      const hashedPassword =
+        await bcrypt.hash(
+          newPassword,
+          10
+        );
+
+      user.password =
+        hashedPassword;
+
+      await user.save();
+
+      res.json({
+        success: true,
+        message:
+          "Password updated",
+      });
+
+    } catch (error) {
+      res.status(500);
+      throw new Error(
+        error.message
+      );
+    }
+  };
 module.exports = {
   registerUser,
   loginUser,
@@ -348,4 +456,6 @@ module.exports = {
   getProfile,
   getAllUsers,
   searchUsers,
+  updateUsername,
+  changePassword,
 };
