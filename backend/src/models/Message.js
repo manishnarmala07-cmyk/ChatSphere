@@ -19,6 +19,17 @@ const messageSchema =
         type: String,
         required: true,
       },
+
+      edited: {
+        type: Boolean,
+        default: false,
+      },
+
+      editedAt: {
+        type: Date,
+        default: null,
+      },
+
       deleted: {
         type: Boolean,
         default: false,
@@ -31,6 +42,16 @@ const messageSchema =
           ref: "User",
         },
       ],
+
+      status: {
+        type: String,
+        enum: [
+          "sent",
+          "delivered",
+          "read",
+        ],
+        default: "sent",
+      },
     },
     {
       timestamps: true,

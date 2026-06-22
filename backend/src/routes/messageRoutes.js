@@ -8,6 +8,8 @@ const {
   deleteForMe,
   deleteForEveryone,
   deleteForBoth,
+  markDelivered,
+  markRead,
 } = require(
   "../controllers/messageController"
 );
@@ -23,7 +25,17 @@ router.post(
   protect,
   sendMessage
 );
+router.put(
+  "/delivered/:id",
+  protect,
+  markDelivered
+);
 
+router.put(
+  "/read/:id",
+  protect,
+  markRead
+);
 router.put(
   "/delete-for-me/:id",
   protect,

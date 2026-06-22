@@ -356,3 +356,10 @@ Content-Type: application/json
 {
   "content":"Edited Message"
 }
+###
+PUT http://localhost:5000/api/messages/delivered/6a38ce7bcd65de5f27388c31
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhMzU4YjY5ZTJkNGFjOGNmZWI2NDM3NyIsImlhdCI6MTc4MjEwNzg3MSwiZXhwIjoxNzgyNzEyNjcxfQ.78qCwziuNxIVVXP5rdJ3qWoo-kI8PF0dv1N0I9VSzrY
+
+###
+PUT http://localhost:5000/api/messages/read/6a38ce7bcd65de5f27388c31
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhMzU4YjY5ZTJkNGFjOGNmZWI2NDM3NyIsImlhdCI6MTc4MjEwNzg3MSwiZXhwIjoxNzgyNzEyNjcxfQ.78qCwziuNxIVVXP5rdJ3qWoo-kI8PF0dv1N0I9VSzrY

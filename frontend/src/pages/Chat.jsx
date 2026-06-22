@@ -1,6 +1,7 @@
 import {
   useEffect,
   useState,
+  useRef,
 } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
@@ -44,6 +45,7 @@ function Chat() {
     const [menuOpen,
   setMenuOpen] =
   useState(null);
+  
   const token =
     localStorage.getItem(
       "token"
@@ -52,6 +54,28 @@ function Chat() {
   useEffect(() => {
     loadUsers();
   }, []);
+  useEffect(() => {
+  if (!user) return;
+
+  const socket =
+    connectSocket();
+
+  socket.emit(
+    "user-online",
+    {
+      id: user.id,
+      name: user.name,
+      username:
+        user.username,
+    }
+  );
+
+  console.log(
+    "Registered Online:",
+    user.id
+  );
+
+}, [user]);
 
   useEffect(() => {
     if (
@@ -62,27 +86,211 @@ function Chat() {
   }, [selectedUser]);
 
   useEffect(() => {
-    const socket =
-      connectSocket();
+  const container =
+    document.getElementById(
+      "chat-container"
+    );
 
-    socket.on(
-      "receive-message",
-      (message) => {
-        setMessages(
-          (prev) => [
-            ...prev,
-            message,
-          ]
-        );
+  if (container) {
+    container.scrollTop =
+      container.scrollHeight;
+  }
+}, [messages]);
+
+useEffect(() => {
+  const socket =
+    connectSocket();
+
+  if (user) {
+    socket.emit(
+      "user-online",
+      {
+        id: user.id,
+        name: user.name,
+        username:
+          user.username,
+      }
+    );
+  }
+
+  socket.on(
+    "connect",
+    () => {
+      console.log(
+        "Socket Connected:",
+        socket.id
+      );
+    }
+  );
+
+  socket.on(
+    "disconnect",
+    () => {
+      console.log(
+        "Socket Disconnected"
+      );
+    }
+  );
+
+  socket.on(
+    "receive-message",
+    async (message) => {
+
+      setMessages(
+        (prev) => [
+          ...prev,
+          message,
+        ]
+      );
+      if (
+  selectedUser &&
+  selectedUser._id ===
+    message.sender
+) {
+
+  try {
+
+    await api.put(
+      `/messages/read/${message._id}`,
+      {},
+      {
+        headers: {
+          Authorization:
+            `Bearer ${token}`,
+        },
       }
     );
 
-    return () => {
-      socket.off(
-        "receive-message"
+    socket.emit(
+      "message-read",
+      {
+        senderId:
+          message.sender,
+        messageId:
+          message._id,
+      }
+    );
+
+  } catch (error) {
+    console.log(error);
+  }
+
+}
+      try {
+
+        await api.put(
+          `/messages/delivered/${message._id}`,
+          {},
+          {
+            headers: {
+              Authorization:
+                `Bearer ${token}`,
+            },
+          }
+        );
+
+        socket.emit(
+          "message-delivered",
+          {
+            senderId:
+              message.sender,
+            messageId:
+              message._id,
+          }
+        );
+
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  );
+
+  socket.on(
+    "message-delivered",
+    async () => {
+
+      console.log(
+        "Delivered received"
       );
-    };
-  }, []);
+
+      if (
+        selectedUser
+      ) {
+        const res =
+          await api.get(
+            `/messages/${selectedUser._id}`,
+            {
+              headers: {
+                Authorization:
+                  `Bearer ${token}`,
+              },
+            }
+          );
+
+        setMessages(
+          res.data
+        );
+      }
+    }
+  );
+
+  socket.on(
+    "message-read",
+    async () => {
+
+      console.log(
+        "Read received"
+      );
+
+      if (
+        selectedUser
+      ) {
+        const res =
+          await api.get(
+            `/messages/${selectedUser._id}`,
+            {
+              headers: {
+                Authorization:
+                  `Bearer ${token}`,
+              },
+            }
+          );
+
+        setMessages(
+          res.data
+        );
+      }
+    }
+  );
+
+  return () => {
+
+    socket.off(
+      "receive-message"
+    );
+
+    socket.off(
+      "message-delivered"
+    );
+
+    socket.off(
+      "message-read"
+    );
+
+    socket.off(
+      "connect"
+    );
+
+    socket.off(
+      "disconnect"
+    );
+  };
+
+}, [
+  selectedUser,
+  token,
+  user,
+]);
 
   const loadUsers =
     async () => {
@@ -101,22 +309,73 @@ function Chat() {
     };
 
   const loadMessages =
-    async () => {
-      const res =
-        await api.get(
-          `/messages/${selectedUser._id}`,
-          {
-            headers: {
-              Authorization:
-                `Bearer ${token}`,
-            },
-          }
-        );
+  async () => {
 
-      setMessages(
-        res.data
+    const res =
+      await api.get(
+        `/messages/${selectedUser._id}`,
+        {
+          headers: {
+            Authorization:
+              `Bearer ${token}`,
+          },
+        }
       );
-    };
+
+    setMessages(
+      res.data
+    );
+
+    const socket =
+      connectSocket();
+
+    for (
+      const message
+      of res.data
+    ) {
+
+      if (
+        message.receiver ===
+  user.id &&
+message.sender ===
+  selectedUser._id &&
+message.status !==
+  "read"
+      ) {
+
+        try {
+
+          await api.put(
+            `/messages/read/${message._id}`,
+            {},
+            {
+              headers: {
+                Authorization:
+                  `Bearer ${token}`,
+              },
+            }
+          );
+
+          socket.emit(
+            "message-read",
+            {
+              senderId:
+                message.sender,
+              messageId:
+                message._id,
+            }
+          );
+
+        } catch (
+          error
+        ) {
+          console.log(
+            error
+          );
+        }
+      }
+    }
+  };
 
   const sendMessage =
     async () => {
@@ -360,11 +619,10 @@ const deleteForBoth =
               </h4>
 
               <div
+                id="chat-container"
                 style={{
-                  height:
-                    "70vh",
-                  overflowY:
-                    "auto",
+                  height: "70vh",
+                  overflowY: "auto",
                 }}
               >
                 {messages.map(
@@ -425,19 +683,50 @@ msg._id ? (
   </>
 ) : (
   <>
-    <span
-      className="badge bg-primary"
-    >
-      {msg.content}
+    <div>
+  <span className="badge bg-primary">
+    {msg.content}
 
-      {msg.edited && (
-        <small>
-          {" "}
-          (edited)
-        </small>
+    {msg.edited && (
+      <small>
+        {" "}
+        (edited)
+      </small>
+    )}
+  </span>
+
+  <div>
+    <small className="text-muted">
+      {new Date(
+        msg.createdAt
+      ).toLocaleTimeString(
+        [],
+        {
+          hour: "2-digit",
+          minute: "2-digit",
+        }
       )}
-    </span>
+    </small>
+  </div>
+</div>
+      {msg.sender ===
+  user.id && (
+  <small
+    className="ms-2 text-muted"
+  >
+    {msg.status ===
+      "sent" &&
+      "✓"}
 
+    {msg.status ===
+      "delivered" &&
+      "✓✓"}
+
+    {msg.status ===
+      "read" &&
+      "✓✓ Read"}
+  </small>
+)}
     {msg.sender ===
   user.id && (
   <div
@@ -532,6 +821,7 @@ msg._id ? (
                     </div>
                   )
                 )}
+                
               </div>
 
               <div className="d-flex gap-2">

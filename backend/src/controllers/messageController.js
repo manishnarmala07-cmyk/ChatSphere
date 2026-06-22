@@ -26,10 +26,12 @@ const sendMessage =
         });
 
       const responseMessage =
-        {
-          ...message.toObject(),
-          content,
-        };
+  {
+    ...message.toObject(),
+    content,
+    status:
+      message.status,
+  };
 
       res.status(201).json(
         responseMessage
@@ -300,6 +302,79 @@ const deleteForMe =
       );
     }
   };
+const markDelivered =
+  async (req, res) => {
+    try {
+      const message =
+        await Message.findById(
+          req.params.id
+        );
+
+      if (!message) {
+        return res
+          .status(404)
+          .json({
+            message:
+              "Message not found",
+          });
+      }
+
+      if (
+        message.status ===
+        "sent"
+      ) {
+        message.status =
+          "delivered";
+
+        await message.save();
+      }
+
+      res.json({
+        success: true,
+        status:
+          message.status,
+      });
+    } catch (error) {
+      res.status(500);
+      throw new Error(
+        error.message
+      );
+    }
+  };
+const markRead =
+  async (req, res) => {
+    try {
+      const message =
+        await Message.findById(
+          req.params.id
+        );
+
+      if (!message) {
+        return res
+          .status(404)
+          .json({
+            message:
+              "Message not found",
+          });
+      }
+
+      message.status =
+        "read";
+
+      await message.save();
+
+      res.json({
+        success: true,
+        status:
+          message.status,
+      });
+    } catch (error) {
+      res.status(500);
+      throw new Error(
+        error.message
+      );
+    }
+  };
 module.exports = {
   sendMessage,
   getMessages,
@@ -307,4 +382,6 @@ module.exports = {
   deleteForMe,
   deleteForEveryone,
   deleteForBoth,
+  markDelivered,
+  markRead,
 };
