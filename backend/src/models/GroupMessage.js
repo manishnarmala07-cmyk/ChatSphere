@@ -21,6 +21,28 @@ const groupMessageSchema =
         type: String,
         required: true,
       },
+
+      edited: {
+        type: Boolean,
+        default: false,
+      },
+
+      editedAt: {
+        type: Date,
+        default: null,
+      },
+      deleted: {
+        type: Boolean,
+        default: false,
+      },
+
+      deletedFor: [
+        {
+          type:
+            mongoose.Schema.Types.ObjectId,
+          ref: "User",
+        },
+      ],
     },
     {
       timestamps: true,

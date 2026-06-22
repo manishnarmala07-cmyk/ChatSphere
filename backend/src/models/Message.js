@@ -19,6 +19,18 @@ const messageSchema =
         type: String,
         required: true,
       },
+      deleted: {
+        type: Boolean,
+        default: false,
+      },
+
+      deletedFor: [
+        {
+          type:
+            mongoose.Schema.Types.ObjectId,
+          ref: "User",
+        },
+      ],
     },
     {
       timestamps: true,

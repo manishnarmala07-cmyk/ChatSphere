@@ -24,10 +24,15 @@ function Dashboard() {
 
   const socket = connectSocket();
 
-  socket.emit(
-    "user-online",
-    user.id
-  );
+ socket.emit(
+  "user-online",
+  {
+    id: user.id,
+    name: user.name,
+    username:
+      user.username,
+  }
+);
 
   socket.on(
     "online-users",
@@ -68,9 +73,12 @@ function Dashboard() {
 
       <ul>
         {onlineUsers.map(
-          (id) => (
-            <li key={id}>
-              {id}
+          (user) => (
+            <li
+              key={user.id}
+            >
+              {user.username ||
+                user.name}
             </li>
           )
         )}

@@ -7,6 +7,13 @@ const userSchema = new mongoose.Schema(
       required: true,
     },
 
+    username: {
+      type: String,
+      unique: true,
+      sparse: true,
+      default: null,
+    },
+
     email: {
       type: String,
       required: true,
@@ -33,4 +40,7 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("User", userSchema);
+module.exports = mongoose.model(
+  "User",
+  userSchema
+);

@@ -31,6 +31,10 @@ const passport =
   require(
     "./routes/messageRoutes"
   );
+const otpRoutes =
+  require(
+    "./routes/otpRoutes"
+  );
 const app = express();
 
 app.use(cors());
@@ -65,6 +69,10 @@ app.use(
 app.use(
   "/api/admin",
   adminRoutes
+);
+app.use(
+  "/api/otp",
+  otpRoutes
 );
 app.use(notFound);
 app.use(errorHandler);

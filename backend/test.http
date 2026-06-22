@@ -133,11 +133,11 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhMzU4YjY5Z
 
 POST http://localhost:5000/api/messages
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhMzU4YjY5ZTJkNGFjOGNmZWI2NDM3NyIsImlhdCI6MTc4MTkzMTMzOSwiZXhwIjoxNzgyNTM2MTM5fQ.XktSGDdxjPbcsUCJIq2FwsFxWDAUtPJB4H5kuAWEYdc
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhMzU4YjY5ZTJkNGFjOGNmZWI2NDM3NyIsImlhdCI6MTc4MjAzNTI1NywiZXhwIjoxNzgyNjQwMDU3fQ.VPGt3H_w0Ryi_iEEU_hNsG6oGQKLfs5TWp_t2yori2E
 
 {
   "receiver": "6a358b71e2d4ac8cfeb64378",
-  "content": "Hello Alex"
+  "content": "Hello 123"
 }
 
 ###
@@ -216,10 +216,10 @@ Authorization: Bearer {{token}}
 
 POST {{baseUrl}}/api/group-messages
 Content-Type: application/json
-Authorization: Bearer {{token}}
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhMzU4YjY5ZTJkNGFjOGNmZWI2NDM3NyIsImlhdCI6MTc4MjAzNTI1NywiZXhwIjoxNzgyNjQwMDU3fQ.VPGt3H_w0Ryi_iEEU_hNsG6oGQKLfs5TWp_t2yori2E
 
 {
-  "groupId": "{{groupId}}",
+  "groupId": "6a3622c6db75682c0b5b6e61",
   "content": "Welcome everyone."
 }
 
@@ -327,3 +327,32 @@ Content-Type: application/json
 
 GET http://localhost:5000/api/admin/stats
 Authorization: Bearer {{adminToken}}
+
+### Send OTP
+
+POST http://localhost:5000/api/otp/send
+Content-Type: application/json
+
+{
+  "email":"manishnarmala07@gmail.com"
+}
+
+### Verify OTP
+
+POST http://localhost:5000/api/otp/verify
+Content-Type: application/json
+
+{
+  "email":"manishnarmala07@gmail.com",
+  "otp":"123456"
+}
+
+### Edit Private Message
+
+PUT http://localhost:5000/api/messages/6a37b444dd6bdd946aee9878
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhMzU4YjY5ZTJkNGFjOGNmZWI2NDM3NyIsImlhdCI6MTc4MjAzNTI1NywiZXhwIjoxNzgyNjQwMDU3fQ.VPGt3H_w0Ryi_iEEU_hNsG6oGQKLfs5TWp_t2yori2E
+Content-Type: application/json
+
+{
+  "content":"Edited Message"
+}

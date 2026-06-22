@@ -13,29 +13,41 @@ const socketHandler = (io) => {
     // ======================
 
     socket.on(
-      "user-online",
-      (userId) => {
-        onlineUsers.set(
-          userId,
-          socket.id
-        );
+  "user-online",
+  (userData) => {
 
-        io.emit(
-          "online-users",
-          Array.from(
-            onlineUsers.keys()
-          )
-        );
-
-        console.log(
-          "Online Users:",
-          Array.from(
-            onlineUsers.keys()
-          )
-        );
+    onlineUsers.set(
+      userData.id,
+      {
+        socketId:
+          socket.id,
+        name:
+          userData.name,
+        username:
+          userData.username,
       }
     );
 
+    io.emit(
+  "online-users",
+  Array.from(
+    onlineUsers.entries()
+  ).map(
+    ([id, data]) => ({
+      id,
+      ...data,
+    })
+  )
+);
+
+    console.log(
+      "Online Users:",
+      Array.from(
+        onlineUsers.keys()
+      )
+    );
+  }
+);
     // ======================
     // PRIVATE CHAT
     // ======================

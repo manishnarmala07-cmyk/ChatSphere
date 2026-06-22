@@ -14,7 +14,7 @@ import ProtectedRoute from "./routes/ProtectedRoute";
 import AdminLogin
 from "./pages/AdminLogin";
 import Home from "./pages/Home";
-
+import VerifyOtp from "./pages/VerifyOtp";
 import AdminDashboard
 from "./pages/AdminDashboard";
 function App() {
@@ -34,7 +34,12 @@ function App() {
           path="/register"
           element={<Register />}
         />
-
+        <Route
+          path="/verify-otp"
+          element={
+            <VerifyOtp />
+          }
+        />
         <Route
           path="/dashboard"
           element={

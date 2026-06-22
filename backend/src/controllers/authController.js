@@ -13,103 +13,174 @@ const client = new OAuth2Client(
 // ======================
 const registerUser = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
-
-    if (!name || !email || !password) {
-      return res.status(400).json({
-        success: false,
-        message: "All fields are required",
-      });
-    }
-
-    const existingUser = await User.findOne({
-      email,
-    });
-
-    if (existingUser) {
-      return res.status(400).json({
-        success: false,
-        message: "User already exists",
-      });
-    }
-
-    const hashedPassword = await bcrypt.hash(
-      password,
-      10
-    );
-
-    const user = await User.create({
+    const {
       name,
+      username,
       email,
-      password: hashedPassword,
+      password,
+    } = req.body;
+    const emailRegex =
+  /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const passwordRegex =
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+    if (
+      !name ||
+      !username ||
+      !email ||
+      !password
+    ) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "All fields are required",
+      });
+    }
+    if (
+  !emailRegex.test(email)
+) {
+  return res
+    .status(400)
+    .json({
+      success: false,
+      message:
+        "Invalid email format",
     });
+}
+if (
+  !passwordRegex.test(
+    password
+  )
+) {
+  return res
+    .status(400)
+    .json({
+      success: false,
+      message:
+        "Password must contain at least 8 characters, one uppercase letter, one lowercase letter and one number",
+    });
+}
+    const existingEmail =
+      await User.findOne({
+        email,
+      });
+
+    if (existingEmail) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Email already registered",
+      });
+    }
+
+    const existingUsername =
+      await User.findOne({
+        username,
+      });
+
+    if (existingUsername) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Username already taken",
+      });
+    }
+
+    const hashedPassword =
+      await bcrypt.hash(
+        password,
+        10
+      );
+
+    const user =
+      await User.create({
+        name,
+        username,
+        email,
+        password:
+          hashedPassword,
+      });
 
     res.status(201).json({
       success: true,
-      token: generateToken(user._id),
+      token: generateToken(
+        user._id
+      ),
       user: {
         id: user._id,
         name: user.name,
-        email: user.email,
+        username:
+          user.username,
+        email:
+          user.email,
       },
     });
   } catch (error) {
     res.status(500);
-    throw new Error(error.message);
+    throw new Error(
+      error.message
+    );
   }
 };
 
 // ======================
 // Login User
 // ======================
-const loginUser = async (req, res) => {
+const loginUser = async (
+  req,
+  res
+) => {
   try {
-    const { email, password } = req.body;
-
-    const user = await User.findOne({
+    const {
       email,
-    });
+      password,
+    } = req.body;
+
+    const user =
+      await User.findOne({
+        email,
+      });
 
     if (!user) {
       return res.status(401).json({
         success: false,
-        message: "Invalid credentials",
-      });
-    }
-
-    if (user.isGoogleUser) {
-      return res.status(400).json({
-        success: false,
         message:
-          "This account uses Google Sign-In",
+          "Invalid credentials",
       });
     }
 
-    const isMatch = await bcrypt.compare(
-      password,
-      user.password
-    );
+    const isMatch =
+      await bcrypt.compare(
+        password,
+        user.password
+      );
 
     if (!isMatch) {
       return res.status(401).json({
         success: false,
-        message: "Invalid credentials",
+        message:
+          "Invalid credentials",
       });
     }
 
     res.json({
       success: true,
-      token: generateToken(user._id),
+      token: generateToken(
+        user._id
+      ),
       user: {
         id: user._id,
         name: user.name,
-        email: user.email,
-        avatar: user.avatar,
+        username:
+          user.username,
+        email:
+          user.email,
       },
     });
   } catch (error) {
     res.status(500);
-    throw new Error(error.message);
+    throw new Error(
+      error.message
+    );
   }
 };
 
@@ -140,27 +211,53 @@ const googleLogin = async (req, res) => {
     const name = payload.name;
     const picture = payload.picture;
 
-    let user = await User.findOne({
-      email,
-    });
+    let user =
+      await User.findOne({
+        email,
+      });
 
     if (!user) {
-      user = await User.create({
-        name,
-        email,
-        avatar: picture,
-        isGoogleUser: true,
-      });
+
+      let username =
+        email.split("@")[0];
+
+      let existingUsername =
+        await User.findOne({
+          username,
+        });
+
+      if (existingUsername) {
+        username =
+          `${username}${Date.now()
+            .toString()
+            .slice(-4)}`;
+      }
+
+      user =
+        await User.create({
+          name,
+          username,
+          email,
+          avatar: picture,
+          isGoogleUser: true,
+        });
     }
 
     res.json({
       success: true,
-      token: generateToken(user._id),
+      token:
+        generateToken(
+          user._id
+        ),
       user: {
         id: user._id,
         name: user.name,
-        email: user.email,
-        avatar: user.avatar,
+        username:
+          user.username,
+        email:
+          user.email,
+        avatar:
+          user.avatar,
       },
     });
   } catch (error) {
@@ -180,7 +277,17 @@ const getProfile = async (
 ) => {
   res.json({
     success: true,
-    user: req.user,
+    user: {
+      id: req.user._id,
+      name:
+        req.user.name,
+      username:
+        req.user.username,
+      email:
+        req.user.email,
+      avatar:
+        req.user.avatar,
+    },
   });
 };
 

@@ -3,7 +3,7 @@ import {
   useState,
   useRef,
 } from "react";
-
+import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
 import InvitePanel
 from "../components/InvitePanel";
@@ -19,6 +19,7 @@ import {
 } from "../socket";
 
 function GroupChat() {
+  const navigate = useNavigate();
   const [groups, setGroups] =
     useState([]);
 
@@ -32,7 +33,16 @@ function GroupChat() {
 
   const [content, setContent] =
     useState("");
+  const [editingId,
+  setEditingId] =
+  useState(null);
 
+  const [editContent,
+    setEditContent] =
+    useState("");
+  const [menuOpen,
+  setMenuOpen] =
+  useState(null);
   const [
     groupName,
     setGroupName,
@@ -134,40 +144,7 @@ loadGroups();
       }
     };
 
-  // =====================
-  // JOIN GROUP
-  // =====================
-
-  // const joinGroup =
-  //   async (
-  //     groupId
-  //   ) => {
-  //     try {
-  //       await api.post(
-  //         "/groups/join",
-  //         {
-  //           groupId,
-  //         },
-  //         {
-  //           headers: {
-  //             Authorization:
-  //               `Bearer ${token}`,
-  //           },
-  //         }
-  //       );
-
-  //       loadGroups();
-  //     } catch (error) {
-  //       console.log(
-  //         error
-  //       );
-  //     }
-  //   };
-
-  // =====================
-  // LOAD MESSAGES
-  // =====================
-
+  
   const loadMessages =
     async (
       groupId
@@ -243,7 +220,113 @@ loadGroups();
         );
       }
     };
+    const editMessage =
+  async (
+    messageId
+  ) => {
+    try {
+      const res =
+        await api.put(
+          `/group-messages/${messageId}`,
+          {
+            content:
+              editContent,
+          },
+          {
+            headers: {
+              Authorization:
+                `Bearer ${token}`,
+            },
+          }
+        );
 
+      setMessages(
+        (prev) =>
+          prev.map(
+            (msg) =>
+              msg._id ===
+              messageId
+                ? res.data
+                : msg
+          )
+      );
+
+      setEditingId(
+        null
+      );
+
+      setEditContent(
+        ""
+      );
+    } catch (
+      error
+    ) {
+      alert(
+        error.response
+          ?.data
+          ?.message ||
+          "Edit failed"
+      );
+    }
+  };
+  const deleteForMe =
+  async (messageId) => {
+    try {
+      await api.put(
+        `/group-messages/delete-for-me/${messageId}`,
+        {},
+        {
+          headers: {
+            Authorization:
+              `Bearer ${token}`,
+          },
+        }
+      );
+
+      setMessages(
+        (prev) =>
+          prev.filter(
+            (msg) =>
+              msg._id !==
+              messageId
+          )
+      );
+    } catch (error) {
+      alert(
+        error.response
+          ?.data
+          ?.message ||
+          "Delete failed"
+      );
+    }
+  };
+
+const deleteForEveryone =
+  async (messageId) => {
+    try {
+      await api.put(
+        `/group-messages/delete-for-everyone/${messageId}`,
+        {},
+        {
+          headers: {
+            Authorization:
+              `Bearer ${token}`,
+          },
+        }
+      );
+
+      loadMessages(
+        selectedGroup._id
+      );
+    } catch (error) {
+      alert(
+        error.response
+          ?.data
+          ?.message ||
+          "Delete failed"
+      );
+    }
+  };
   // =====================
   // OPEN GROUP
   // =====================
@@ -337,9 +420,35 @@ loadGroups();
       );
     };
   }, []);
+  const canEdit =
+  (message) => {
+    const tenMinutes =
+      10 *
+      60 *
+      1000;
 
+    const senderId =
+      message.sender?._id ||
+      message.sender;
+
+    return (
+      senderId ===
+        currentUser.id &&
+      Date.now() -
+        new Date(
+          message.createdAt
+        ).getTime() <
+        tenMinutes
+    );
+  };
   return (
     <div className="container-fluid">
+      <button
+        className="btn btn-secondary mb-3"
+        onClick={() => navigate("/dashboard")}
+      >
+        ← Back
+      </button>
       <div className="row vh-100">
 
         {/* SIDEBAR */}
@@ -522,11 +631,140 @@ loadGroups();
                             </small>
                           )}
 
-                          <div>
-                            {
-                              msg.content
-                            }
-                          </div>
+                          {editingId ===
+msg._id ? (
+  <div>
+
+    <input
+      className="form-control mb-2"
+      value={
+        editContent
+      }
+      onChange={(
+        e
+      ) =>
+        setEditContent(
+          e.target
+            .value
+        )
+      }
+    />
+
+    <button
+      className="btn btn-success btn-sm me-2"
+      onClick={() =>
+        editMessage(
+          msg._id
+        )
+      }
+    >
+      Save
+    </button>
+
+    <button
+      className="btn btn-secondary btn-sm"
+      onClick={() =>
+        setEditingId(
+          null
+        )
+      }
+    >
+      Cancel
+    </button>
+
+  </div>
+) : (
+  <div>
+
+    {msg.content}
+
+    {msg.edited && (
+      <small>
+        {" "}
+        (edited)
+      </small>
+    )}
+
+    {isMine && (
+  <div
+    className="d-inline-block position-relative ms-2"
+  >
+    <button
+      className="btn btn-secondary btn-sm"
+      onClick={() =>
+        setMenuOpen(
+          menuOpen ===
+            msg._id
+            ? null
+            : msg._id
+        )
+      }
+    >
+      ⋮
+    </button>
+
+    {menuOpen ===
+      msg._id && (
+      <div
+        className="position-absolute bg-white border p-2"
+        style={{
+          right: 0,
+          zIndex: 1000,
+          minWidth:
+            "180px",
+        }}
+      >
+        {canEdit(
+          msg
+        ) && (
+          <button
+            className="dropdown-item"
+            onClick={() => {
+              setEditingId(
+                msg._id
+              );
+
+              setEditContent(
+                msg.content
+              );
+
+              setMenuOpen(
+                null
+              );
+            }}
+          >
+            ✏ Edit
+          </button>
+        )}
+
+        <button
+          className="dropdown-item text-dark"
+          onClick={() =>
+            deleteForMe(
+              msg._id
+            )
+          }
+        >
+          Delete For Me
+        </button>
+
+        <button
+          className="dropdown-item text-dark"
+          onClick={() =>
+            deleteForEveryone(
+              msg._id
+            )
+          }
+        >
+          Delete For Everyone
+        </button>
+      </div>
+    )}
+  </div>
+)}
+
+  </div>
+)}
 
                           <small
                             style={{
