@@ -141,7 +141,11 @@ function Login() {
         >
           Login
         </button>
-
+          <p className="mt-3 text-center">
+  <Link to="/">
+    Back to Home
+  </Link>
+</p>
         <p className="mt-3 text-center">
           Don't have an account?{" "}
           <Link to="/register">

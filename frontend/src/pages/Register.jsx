@@ -200,7 +200,11 @@ function Register() {
             ? "Sending OTP..."
             : "Register"}
         </button>
-
+            <p className="mt-3 text-center">
+  <Link to="/">
+    Back to Home
+  </Link>
+</p>
         <p className="mt-3 text-center">
           Already have an account?{" "}
           <Link to="/login">
